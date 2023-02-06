@@ -21,6 +21,10 @@ type OrderItemHandler interface{
 	Delete(c echo.Context) error
 }
 
+func NewOrderItemController(ordersItemService service.OrdersItemService) OrderItemHandler{
+	return &orderItemHandler{ordersItemService}
+}
+
 func (h *orderItemHandler) Create(c echo.Context) error{
 	var bodyRequest request.OrdersItemRequest
 
@@ -41,7 +45,7 @@ func (h *orderItemHandler) Create(c echo.Context) error{
 }
 
 func (h *orderItemHandler) FindAllOrderItems(c echo.Context) error{
-	var bodyRequest request.OrdersItemRequest
+	var bodyRequest request.FindAllOrderItems
 
 	if err := c.Bind(&bodyRequest); err != nil {
 		return response.ErrBadRequest(c,err)

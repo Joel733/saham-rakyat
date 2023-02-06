@@ -8,7 +8,7 @@ import (
 	"gorm.io/gorm"
 )
   
-  func InitDatabase() {
+  func InitDatabase() (*gorm.DB, error){
 
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
 	os.Getenv("username"),
@@ -20,4 +20,5 @@ import (
 	
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	
+	return db, err
 }

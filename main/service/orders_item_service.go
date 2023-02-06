@@ -14,10 +14,14 @@ type ordersItemRepo struct {
 
 type OrdersItemService interface {
 	Create(req request.OrdersItemRequest) (interface{},error)
-	FindAll(req request.OrdersItemRequest) (interface{},error)
+	FindAll(req request.FindAllOrderItems) (interface{},error)
 	Detail(id int)(interface{},error)
 	Update(req request.OrdersItemRequest) (interface{},error)
 	Delete(req request.OrdersItemRequest) (interface{},error)
+}
+
+func NewOrderItemsService(repo repository.OrdersItemsRepository) OrdersItemService{
+	return &ordersItemRepo{repo}
 }
 
 func (u *ordersItemRepo) Create(req request.OrdersItemRequest) (interface{}, error) {
@@ -73,15 +77,18 @@ func (r *ordersItemRepo) Update(req request.OrdersItemRequest) (interface{}, err
 	return order, nil
 }
 
-func (r *ordersItemRepo) Delete(req request.OrdersItemRequest) (error){
+func (r *ordersItemRepo) Delete(req request.OrdersItemRequest) (interface{},error){
 
 	order, err := r.repo.Detail(req.ID)
 
 	if err != nil {
-		return fmt.Errorf("failed to find order histories : %v",err)
+		return nil,fmt.Errorf("failed to find order histories : %v",err)
 	}
 
 	err = r.repo.Delete(order)
 
-	return err
+	rsp := map[string]string{"status" : "OK", "message" : "Delete success"}
+
+	return rsp, err
+
 }

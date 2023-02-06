@@ -20,6 +20,10 @@ type OrderHistoriesHandler interface {
 	Delete(c echo.Context) error
 }
 
+func NewOrderHistoriesController(orderHistoriesService service.OrdersHistoriesService) OrderHistoriesHandler{
+	return &orderHistoriesHandler{}
+}
+
 func (h *orderHistoriesHandler) Create(c echo.Context) error{
 	var bodyRequest request.OrderHistoriesRequest
 
@@ -36,7 +40,7 @@ func (h *orderHistoriesHandler) Create(c echo.Context) error{
 }
 
 func (h *orderHistoriesHandler) FindAllOrderHistories(c echo.Context) error{
-	var bodyRequest request.OrderHistoriesRequest
+	var bodyRequest request.FindAllOrderHistoriesItems
 
 	if err := c.Bind(&bodyRequest); err != nil {
 		return response.ErrBadRequest(c,err)

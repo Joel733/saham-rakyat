@@ -20,6 +20,10 @@ type UserHandler interface{
 	Delete(c echo.Context) error
 }
 
+func NewUserHandler(userService service.UserService) UserHandler{
+	return &userHandler{userService}
+}
+
 func (h *userHandler) Create(c echo.Context) error{
 	var bodyRequest request.UsersRequest
 
@@ -36,7 +40,7 @@ func (h *userHandler) Create(c echo.Context) error{
 }
 
 func (h *userHandler) FindAllUsers(c echo.Context) error{
-	var bodyRequest request.UsersRequest
+	var bodyRequest request.FindAllUsersRequest
 
 	if err := c.Bind(&bodyRequest); err != nil {
 		return response.ErrBadRequest(c,err)

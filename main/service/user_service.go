@@ -14,10 +14,14 @@ type userRepository struct {
 
 type UserService interface {
 	Create(req request.UsersRequest) (interface{},error)
-	FindAll(req request.UsersRequest) (interface{},error)
+	FindAll(req request.FindAllUsersRequest) (interface{},error)
 	Detail(id int)(interface{},error)
 	Update(req request.UsersRequest) (interface{},error)
 	Delete(req request.UsersRequest) (interface{},error)
+}
+
+func NewUserService(repo repository.UsersRepository) UserService{
+	return &userRepository{repo}
 }
 
 func (u *userRepository) Create(req request.UsersRequest) (interface{}, error) {
@@ -70,15 +74,17 @@ func (r *userRepository) Update(req request.UsersRequest) (interface{}, error){
 	return order, nil
 }
 
-func (r *userRepository) Delete(req request.UsersRequest) (error){
+func (r *userRepository) Delete(req request.UsersRequest) (interface{},error){
 
 	order, err := r.repo.Detail(req.ID)
 
 	if err != nil {
-		return fmt.Errorf("failed to find user : %v",err)
+		return nil,fmt.Errorf("failed to find user : %v",err)
 	}
 
 	err = r.repo.Delete(order)
 
-	return err
+	rsp := map[string]string{"status" : "OK", "message" : "Delete success"}
+
+	return rsp, err
 }
